@@ -1,17 +1,11 @@
-# Docker Image which is used as foundation to create
-# a custom Docker Image with this Dockerfile
-FROM node:11-alpine
-RUN mkdir /client
-# A directory within the virtualized Docker environment
-# Becomes more relevant when using Docker Compose later
-WORKDIR /client
-# Copies package.json and package-lock.json to Docker environment
-COPY package*.json ./
-# Installs all node packages
+FROM node:alpine as builder
+WORKDIR /app
+COPY . ./
 RUN npm install
-# Copies everything over to Docker environment
-COPY . .
-# Uses port which is used by the actual application
-EXPOSE 3000
-# Finally runs the application
-CMD [ "npm", "start" ]
+RUN npm run build
+
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
