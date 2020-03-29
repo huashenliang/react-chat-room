@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import io from 'socket.io-client';
 
 import './Chat.css';
-// import TextContainer from '../TextContainer/TextContainer';
+import TextContainer from '../TextContainer/TextContainer';
 import Messages from '../Messages/Messages';
 import InfoBar from '../InfoBar/InfoBar';
 import Input from '../Input/Input';
@@ -15,6 +15,7 @@ const Chat = ({location}) => {
     const [room, setRoom] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [users, setUsers] = useState([]);
 
     const ENDPOINT ='localhost:5000';
      
@@ -41,9 +42,14 @@ const Chat = ({location}) => {
 
     }, [ENDPOINT, location.search])
 
+    
     useEffect (() => {
         socket.on('message', (message) => {
             setMessages([...messages, message]);
+        })
+
+        socket.on('roomData', ({users}) => {
+            setUsers(users);
         })
     }, [messages]);
 
@@ -56,8 +62,7 @@ const Chat = ({location}) => {
             socket.emit('sendMessage', message, () => setMessage(''));
         }
       }
-
-    console.log(message, messages)
+    
 
     return ( 
         <div className="outerContainer">
@@ -71,7 +76,7 @@ const Chat = ({location}) => {
             <Messages messages={messages} name={name} />
            <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
         </div>
-        {/* <TextContainer users={users}/> */}
+        <TextContainer users={users}/>
       </div>
      );
 }
