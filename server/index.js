@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
         const {error, user} = addUser ({id: socket.id, name, room});
 
         console.log(user)
-        
+
         if(error) return cb(error);
 
         socket.emit('message', {user: 'admin', text: `${user.name} welcome to the ${user.room}`});
@@ -27,6 +27,9 @@ io.on('connection', (socket) => {
         //socket join method
         socket.join(user.room);
 
+        //show all the userin the room
+        io.to(user.room).emit('roomData', {room: user.room, users: getUsersInRoom(user.room)})
+
         cb();
     })
 
@@ -34,13 +37,17 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (message, cb) => {
         const user = getUser(socket.id);
 
+        io.to(user.room).emit('roomData', {room: user.room, users: getUsersInRoom(user.room)})
         io.to(user.room).emit('message' , {user: user.name, text:message});
 
         cb();
     })
 
     socket.on('disconnect', () =>{
-        console.log('User had left!')
+        const user = removeUser(socket.id);
+        if(user){
+            io.to(user.room).emit('message', {user:'admin', text:`${user.name} has left`})
+        }
     })
 });
 
