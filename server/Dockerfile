@@ -1,22 +1,29 @@
-FROM node:11-alpine
+# FROM node:11-alpine
 
-RUN mkdir /server
+# RUN mkdir /server
 
-WORKDIR /server
+# WORKDIR /server
 
-COPY . .
+# COPY . .
 
-RUN npm install
+# RUN npm install
 
-EXPOSE 5000
-
-CMD ["npm",  "start"]
-
-
-
-
-# FROM nginx:alpine
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-# COPY --from=builder /app/build /usr/share/nginx/html
 # EXPOSE 5000
-# CMD ["nginx", "-g", "daemon off;"]
+
+# CMD ["npm",  "start"]
+
+# Use a lighter version of Node as a parent image
+FROM mhart/alpine-node:8.11.4
+# Set the working directory to /api
+WORKDIR /api
+# copy package.json into the container at /api
+COPY package*.json /api/
+# install dependencies
+RUN npm install
+# Copy the current directory contents into the container at /api
+COPY . /api/
+# Make port 80 available to the world outside this container
+EXPOSE 80
+# Run the app when the container launchesCMD 
+["npm", "start"]
+
