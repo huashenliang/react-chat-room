@@ -1,0 +1,19 @@
+version: '3'
+services:
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    volumes:
+      - ./client:/client
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    ports:
+      - "5000:80"
+    volumes:
+      - ./server:/server
+    
+
