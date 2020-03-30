@@ -24,6 +24,13 @@ RUN npm install
 COPY . /api/
 # Make port 80 available to the world outside this container
 EXPOSE 80
-# Run the app when the container launchesCMD 
-["npm", "start"]
+# Run the app when the container launches
+CMD ["npm", "start"]
+
+
+FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
 
