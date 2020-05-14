@@ -1,0 +1,25 @@
+{
+  "name": "react-chat-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js",
+    "server": "nodemon server/index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huashenliang/react-chat-room.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huashenliang/react-chat-room/issues"
+  },
+  "homepage": "https://github.com/huashenliang/react-chat-room#readme"
+}
